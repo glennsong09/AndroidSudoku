@@ -1,14 +1,19 @@
 package com.example.sudoku;
 import java.util.ArrayList;
 
-public class Sudoku {
+public class SudokuSolver {
 
     public static final int GRIDNUM = 9;
     public static final int BOXSIZE = 3;
 
-    private ArrayList<char> sudokuBoardTemp;
     private char[][] sudokuBoard;
 
+    /**
+     * This method returns the value at a certain position on the board.
+     * @param rowPos the row the value is located in
+     * @param colPos the column the value is located in
+     * @return the value of the board at that row and column position
+     */
     public int getSudokuBoardValue(int rowPos, int colPos) {
         return sudokuBoard[rowPos][colPos];
     }
@@ -23,14 +28,15 @@ public class Sudoku {
     }
 
     public int[] findEmptyPosition() {
-        int[] emptyPosition;
+        int[] emptyPosition = new int[2];
         for (int i = 0; i < GRIDNUM; i++) {
             for (int j = 0; j < GRIDNUM; j++) {
                 if (isAssignedByInput(i, j)) {
                     continue;
                 }
                 else {
-                    emptyPosition = { i, j };
+                    emptyPosition[0] = i;
+                    emptyPosition[1] = j;
                     return emptyPosition;
                 }
 
@@ -70,12 +76,12 @@ public class Sudoku {
     }
 
     public boolean solveBoard() {
-        int[] to_try = findEmptyPosition();
-        if (to_try.size() <= 0) {
+        int[] toTry = findEmptyPosition();
+        if (toTry.length <= 0) {
             return true;
         }
-        int row = to_try[0];
-        int col = to_try[1];
+        int row = toTry[0];
+        int col = toTry[1];
         for (char num = '1'; num <= '9'; num++) {
             if (checkNumbersAllowedInPositionHorizontalVertical(row, col, num) && checkNumbersAllowedInPositionBox(row, col, num)) {
                 sudokuBoard[row][col] = num;
