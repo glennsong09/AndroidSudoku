@@ -1,5 +1,4 @@
 package com.example.sudoku;
-import java.util.ArrayList;
 
 public class SudokuSolver {
 
@@ -7,6 +6,10 @@ public class SudokuSolver {
     public static final int BOXSIZE = 3;
 
     private char[][] sudokuBoard;
+
+    public char[][] getSudokuBoard() {
+        return sudokuBoard;
+    }
 
     /**
      * This method returns the value at a certain position on the board.
@@ -92,6 +95,10 @@ public class SudokuSolver {
             }
         }
         return false;
+    }
+
+    public boolean checkBoard() {
+        for (int i = 0; i < )
     }
 }
 
