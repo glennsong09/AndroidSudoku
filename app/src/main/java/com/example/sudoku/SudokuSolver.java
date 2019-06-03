@@ -11,12 +11,6 @@ public class SudokuSolver {
         return sudokuBoard;
     }
 
-    /**
-     * This method returns the value at a certain position on the board.
-     * @param rowPos the row the value is located in
-     * @param colPos the column the value is located in
-     * @return the value of the board at that row and column position
-     */
     public int getSudokuBoardValue(int rowPos, int colPos) {
         return sudokuBoard[rowPos][colPos];
     }
@@ -97,8 +91,37 @@ public class SudokuSolver {
         return false;
     }
 
-    public boolean checkBoard() {
-        for (int i = 0; i < )
+    public boolean checkHorizontalVertialBoard() {
+        int counter = 0;
+        for (int i = 0; i < GRIDNUM; i++) {
+            for (int j = 1; j < GRIDNUM; j++) {
+                if (sudokuBoard[counter][i] == sudokuBoard[j][counter]) {
+                    return false;
+                }
+                if (sudokuBoard[i][counter] == sudokuBoard[counter][j]) {
+                    return false;
+                }
+                counter++;
+            }
+        }
+        return true;
+    }
+
+
+    public boolean checkBoxesBoard(int baseRow, int baseCol, int squareSize) {
+        boolean[] found = new boolean[GRIDNUM];
+        for (int row = baseRow; row < (baseRow + squareSize); ++row) {
+            for (int col = baseCol; col < (baseCol + squareSize); ++col) {
+                int index = sudokuBoard[row][col] - 1;
+                if (!found[index]) {
+                    found[index] = true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
 
