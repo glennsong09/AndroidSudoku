@@ -1,9 +1,13 @@
 package com.example.sudoku;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -21,10 +25,19 @@ public class HardBoard extends AppCompatActivity {
     private EditText[] editArray = new EditText[GRIDNUM * GRIDNUM];
     private ArrayList<Integer> allowedNums = new ArrayList<Integer>();
 
+    private class NumericKeyBoardTransformationMethod extends PasswordTransformationMethod {
+        @Override
+        public CharSequence getTransformation(CharSequence source, View view) {
+            return source;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hard_board);
+        configureMenuButton();
+        configureCheckButton();
 
         allowedNums.add(1);
         allowedNums.add(2);
@@ -37,10 +50,6 @@ public class HardBoard extends AppCompatActivity {
         allowedNums.add(9);
 
         generateHardBoard();
-        setInitialTextEditArrays();
-        //setCharLimit();
-        setCanModify();
-        setEditable();
         /*
         while (!solveBoard()) {
             setContentView(R.layout.activity_loading);
@@ -48,6 +57,55 @@ public class HardBoard extends AppCompatActivity {
         }
         setContentView(R.layout.activity_board_new);
         */
+
+        setInitialTextEditArrays();
+        setCharLimit();
+        setCanModify();
+        setEditable();
+    }
+
+
+    public void configureMenuButton() {
+        Button buttonMenu = findViewById(R.id.boardMainMenuButton);
+        buttonMenu.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(HardBoard.this, MainActivity.class));
+            } });
+    }
+
+    public void configureCheckButton() {
+        Button buttonMenu = findViewById(R.id.boardCheckButton);
+        buttonMenu.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(HardBoard.this, FinalScreen.class));
+                //setFinalBoard();
+            } });
+    }
+
+    @SuppressWarnings("unchecked")
+    public void generateHardBoard() {
+        int count = 0;
+        for (int i = 0; i < GRIDNUM; i++) {
+            for (int j = 0; j < GRIDNUM; j++) {
+                sudokuBoard[i][j] = ' ';
+            }
+        }
+        for (int i = 0; i < GRIDNUM; i++) {
+            ArrayList<Integer> copy = (ArrayList<Integer>) allowedNums.clone();
+            Collections.shuffle(copy);
+            for (int j = 0; j < GRIDNUM; j++) {
+                if (count >= 3) {
+                    count = 0;
+                    break;
+                }
+                if (Math.random() < 0.3) {
+                    sudokuBoard[i][j] = copy.get(0).toString().charAt(0);
+                    copy.remove(0);
+                    count++;
+                    Collections.shuffle(copy);
+                }
+            }
+        }
     }
 
     public boolean isAssignedByInput(int rowPosition, int colPosition) {
@@ -158,32 +216,6 @@ public class HardBoard extends AppCompatActivity {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
-    public void generateHardBoard() {
-        int count = 0;
-        for (int i = 0; i < GRIDNUM; i++) {
-            for (int j = 0; j < GRIDNUM; j++) {
-                sudokuBoard[i][j] = ' ';
-            }
-        }
-        for (int i = 0; i < GRIDNUM; i++) {
-            ArrayList<Integer> copy = (ArrayList<Integer>) allowedNums.clone();
-            Collections.shuffle(copy);
-            for (int j = 0; j < GRIDNUM; j++) {
-                if (count >= 3) {
-                    count = 0;
-                    break;
-                }
-                if (Math.random() < 0.5) {
-                    sudokuBoard[i][j] = copy.get(0).toString().charAt(0);
-                    copy.remove(0);
-                    count++;
-                    Collections.shuffle(copy);
-                }
-            }
-        }
-    }
-
     public void setCanModify() {
         for (int i = 0; i < GRIDNUM; i++) {
             for (int j = 0; j < GRIDNUM; j++) {
@@ -230,6 +262,8 @@ public class HardBoard extends AppCompatActivity {
     public void setCharLimit() {
         for (int i = 0; i < (GRIDNUM*GRIDNUM); i++) {
             editArray[i].setFilters(new InputFilter[] {new InputFilter.LengthFilter(CHARLIMIT)});
+            editArray[i].setInputType(InputType.TYPE_CLASS_NUMBER);
+            editArray[i].setTransformationMethod(new NumericKeyBoardTransformationMethod());
         }
     }
 

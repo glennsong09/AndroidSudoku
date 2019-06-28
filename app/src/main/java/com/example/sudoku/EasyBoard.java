@@ -1,12 +1,14 @@
 package com.example.sudoku;
-
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -16,15 +18,25 @@ public class EasyBoard extends AppCompatActivity {
     public static final int BOXSIZE = 3;
     public static final int CHARLIMIT = 1;
     private char[][] sudokuBoard = new char[9][9];
+    private char[][] completedBoard = new char[9][9];
     private boolean[][] canModify = new boolean[9][9];
     private TextView[] textArray = new TextView[GRIDNUM * GRIDNUM];
     private EditText[] editArray = new EditText[GRIDNUM * GRIDNUM];
     private ArrayList<Integer> allowedNums = new ArrayList<Integer>();
 
+    private class NumericKeyBoardTransformationMethod extends PasswordTransformationMethod {
+        @Override
+        public CharSequence getTransformation(CharSequence source, View view) {
+            return source;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_easy_board);
+        configureMenuButton();
+        configureCheckButton();
 
         allowedNums.add(1);
         allowedNums.add(2);
@@ -37,10 +49,6 @@ public class EasyBoard extends AppCompatActivity {
         allowedNums.add(9);
 
         generateEasyBoard();
-        setInitialTextEditArrays();
-        //setCharLimit();
-        setCanModify();
-        setEditable();
         /*
         while (!solveBoard()) {
             setContentView(R.layout.activity_loading);
@@ -48,7 +56,65 @@ public class EasyBoard extends AppCompatActivity {
         }
         setContentView(R.layout.activity_board_new);
         */
+        setInitialTextEditArrays();
+        setCharLimit();
+        setCanModify();
+        setEditable();
     }
+
+
+    private native int  doNativeAction(char[] gameData);
+
+    /**
+    static {
+        System.loadLibrary("native-lib");
+    }
+     */
+
+    public void configureMenuButton() {
+        Button buttonMenu = findViewById(R.id.boardMainMenuButton);
+        buttonMenu.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(EasyBoard.this, MainActivity.class));
+            } });
+    }
+
+    public void configureCheckButton() {
+        Button buttonMenu = findViewById(R.id.boardCheckButton);
+        buttonMenu.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(EasyBoard.this, FinalScreen.class));
+                //setFinalBoard();
+            } });
+    }
+
+    @SuppressWarnings("unchecked")
+    public void generateEasyBoard() {
+        int count = 0;
+        for (int i = 0; i < GRIDNUM; i++) {
+            for (int j = 0; j < GRIDNUM; j++) {
+                sudokuBoard[i][j] = ' ';
+            }
+        }
+        for (int i = 0; i < GRIDNUM; i++) {
+            ArrayList<Integer> copy = (ArrayList<Integer>) allowedNums.clone();
+            Collections.shuffle(copy);
+            for (int j = 0; j < GRIDNUM; j++) {
+                if (count >= 5) {
+                    count = 0;
+                    break;
+                }
+                if (Math.random() < 0.5) {
+                    sudokuBoard[i][j] = copy.get(0).toString().charAt(0);
+                    copy.remove(0);
+                    count++;
+                }
+                Collections.shuffle(copy);
+            }
+        }
+    }
+
+    /*
 
     public boolean isAssignedByInput(int rowPosition, int colPosition) {
         if (sudokuBoard[rowPosition][colPosition] == '_') {
@@ -126,6 +192,8 @@ public class EasyBoard extends AppCompatActivity {
         return false;
     }
 
+    */
+
     public boolean checkHorizontalVertialBoard() {
         int counter = 0;
         for (int i = 0; i < GRIDNUM; i++) {
@@ -157,32 +225,6 @@ public class EasyBoard extends AppCompatActivity {
         }
         return true;
     }
-    
-    @SuppressWarnings("unchecked")
-    public void generateEasyBoard() {
-        int count = 0;
-        for (int i = 0; i < GRIDNUM; i++) {
-            for (int j = 0; j < GRIDNUM; j++) {
-                sudokuBoard[i][j] = ' ';
-            }
-        }
-        for (int i = 0; i < GRIDNUM; i++) {
-            ArrayList<Integer> copy = (ArrayList<Integer>) allowedNums.clone();
-            Collections.shuffle(copy);
-            for (int j = 0; j < GRIDNUM; j++) {
-                if (count >= 5) {
-                    count = 0;
-                    break;
-                }
-                if (Math.random() < 0.5) {
-                    sudokuBoard[i][j] = copy.get(0).toString().charAt(0);
-                    copy.remove(0);
-                    count++;
-                    Collections.shuffle(copy);
-                }
-            }
-        }
-    }
 
     public void setCanModify() {
         for (int i = 0; i < GRIDNUM; i++) {
@@ -210,7 +252,7 @@ public class EasyBoard extends AppCompatActivity {
         }
     }
 
-    public char[][] setFinalBoard() {
+    public void setFinalBoard() {
         int count = 0;
         char[][] boardCopy = new char[sudokuBoard.length][];
         for (int i = 0; i < sudokuBoard.length; i++) {
@@ -224,12 +266,14 @@ public class EasyBoard extends AppCompatActivity {
                 count++;
             }
         }
-        return boardCopy;
+        completedBoard = boardCopy;
     }
 
     public void setCharLimit() {
         for (int i = 0; i < (GRIDNUM*GRIDNUM); i++) {
             editArray[i].setFilters(new InputFilter[] {new InputFilter.LengthFilter(CHARLIMIT)});
+            editArray[i].setInputType(InputType.TYPE_CLASS_NUMBER);
+            editArray[i].setTransformationMethod(new EasyBoard.NumericKeyBoardTransformationMethod());
         }
     }
 

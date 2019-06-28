@@ -41,7 +41,7 @@
         app:srcCompat="@drawable/sudoku_board_image" />
 
     <Button
-        android:id="@+id/boardCheckButtonNew"
+        android:id="@+id/boardCheckButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/board" />
 
     <Button
-        android:id="@+id/boardMainMenuButtonNew"
+        android:id="@+id/boardMainMenuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
