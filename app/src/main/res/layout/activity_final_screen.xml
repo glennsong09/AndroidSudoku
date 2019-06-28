@@ -42,7 +42,7 @@
     <ImageView
         android:id="@+id/smallBackground0"
         android:layout_width="312dp"
-        android:layout_height="129dp"
+        android:layout_height="208dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -76,14 +76,15 @@
 
     <TextView
         android:id="@+id/tryAgainText"
-        android:layout_width="279dp"
-        android:layout_height="95dp"
+        android:layout_width="281dp"
+        android:layout_height="177dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:gravity="center"
         android:text="Nice job! You finished a sudoku puzzle. Would you like to try again?"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"

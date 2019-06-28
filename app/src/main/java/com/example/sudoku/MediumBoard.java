@@ -1,5 +1,6 @@
 package com.example.sudoku;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,8 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class MediumBoard extends AppCompatActivity {
@@ -20,10 +23,16 @@ public class MediumBoard extends AppCompatActivity {
     public static final int BOXSIZE = 3;
     public static final int CHARLIMIT = 1;
     private char[][] sudokuBoard = new char[9][9];
+    private char[][] completedBoard = new char[9][9];
     private boolean[][] canModify = new boolean[9][9];
     private TextView[] textArray = new TextView[GRIDNUM * GRIDNUM];
     private EditText[] editArray = new EditText[GRIDNUM * GRIDNUM];
     private ArrayList<Integer> allowedNums = new ArrayList<Integer>();
+    private final String PUZZLEONE = "_____5__24_6_3951_1____8____749_2__1_5__6__2_8__3_476____5____4_4928_1_37__4_____";
+    private final String PUZZLETWO = "_7_8_4__2_1__2__5_4__6_5___24___3_____3_6_8_____5___14___2_6__1_9__5__8_6__1_8_7_";
+    private final String PUZZLETHREE = "_____7__483_1___9_____8_6____3274_____5_6_9_____3594____9_3_____7___6_481__7_____";
+    private final String PUZZLEFOUR = "2_5__4____38__7______58_1__6____2_3___7___2___1_7____4__6_51______9__57____4__8_9";
+    private final String PUZZLECOMPLETE = "53467891267219534819834256785976142342685379171392485696153728428741963534528617_";
 
     private class NumericKeyBoardTransformationMethod extends PasswordTransformationMethod {
         @Override
@@ -49,7 +58,9 @@ public class MediumBoard extends AppCompatActivity {
         allowedNums.add(8);
         allowedNums.add(9);
 
-        generateMediumBoard();
+        generateBoardFromPreexistingPuzzles(PUZZLEONE);
+
+        //generateMediumBoard();
         /*
         while (!solveBoard()) {
             setContentView(R.layout.activity_loading);
@@ -73,11 +84,19 @@ public class MediumBoard extends AppCompatActivity {
     }
 
     public void configureCheckButton() {
-        Button buttonMenu = findViewById(R.id.boardCheckButton);
-        buttonMenu.setOnClickListener(new View.OnClickListener() {
+        Button buttonCheck = findViewById(R.id.checkBoardButton);
+        buttonCheck.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(new Intent(MediumBoard.this, FinalScreen.class));
-                //setFinalBoard();
+                setFinalBoard();
+                if (checkSudokuStatus(completedBoard)) {
+                    startActivity(new Intent(MediumBoard.this, FinalScreen.class));
+                } else {
+                    Context context = getApplicationContext();
+                    CharSequence text = "Your solution is incorrect!";
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
             } });
     }
 
@@ -106,6 +125,48 @@ public class MediumBoard extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public void generateBoardFromPreexistingPuzzles(String puzzle) {
+        int count = 0;
+        for (int i = 0; i < GRIDNUM; i++) {
+            for (int j = 0; j < GRIDNUM; j++) {
+                if (puzzle.charAt(count) == '_') {
+                    sudokuBoard[i][j] = ' ';
+                } else {
+                    sudokuBoard[i][j] = puzzle.charAt(count);
+                }
+                count++;
+            }
+        }
+    }
+
+    private boolean checkSudokuStatus(char[][] grid) {
+        for (int i = 0; i < 9; i++) {
+
+            char[] row = new char[9];
+            char[] square = new char[9];
+            char[] column = grid[i].clone();
+
+            for (int j = 0; j < 9; j ++) {
+                row[j] = grid[j][i];
+                square[j] = grid[(i / 3) * 3 + j / 3][i * 3 % 9 + j % 3];
+            }
+            if (!(validate(column) && validate(row) && validate(square)))
+                return false;
+        }
+        return true;
+    }
+
+    private boolean validate(char[] check) {
+        char i = '1';
+        Arrays.sort(check);
+        for (char number : check) {
+            if (number != i)
+                return false;
+            i++;
+        }
+        return true;
     }
 
     public boolean isAssignedByInput(int rowPosition, int colPosition) {
@@ -242,21 +303,25 @@ public class MediumBoard extends AppCompatActivity {
         }
     }
 
-    public char[][] setFinalBoard() {
+    public void setFinalBoard() {
         int count = 0;
-        char[][] boardCopy = new char[sudokuBoard.length][];
+        char[][] boardCopy = new char[GRIDNUM][GRIDNUM];
         for (int i = 0; i < sudokuBoard.length; i++) {
             boardCopy[i] = sudokuBoard[i].clone();
         }
         for (int i = 0; i < GRIDNUM; i++) {
             for (int j = 0; j < GRIDNUM; j++) {
                 if (canModify[i][j]) {
-                    boardCopy[i][j] = editArray[count].getText().toString().charAt(0);
+                    if (editArray[count].getText().toString().length() == 0) {
+                        boardCopy[i][j] = ' ';
+                    } else {
+                        boardCopy[i][j] = editArray[count].getText().toString().charAt(0);
+                    }
                 }
                 count++;
             }
         }
-        return boardCopy;
+        completedBoard = boardCopy;
     }
 
     public void setCharLimit() {

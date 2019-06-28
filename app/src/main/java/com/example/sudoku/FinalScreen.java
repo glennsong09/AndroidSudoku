@@ -17,8 +17,8 @@ public class FinalScreen extends AppCompatActivity {
     }
 
     public void configureRetryButton() {
-        Button buttonMenu = findViewById(R.id.boardMainMenuButton);
-        buttonMenu.setOnClickListener(new View.OnClickListener() {
+        Button buttonRetry = findViewById(R.id.startMenuButton);
+        buttonRetry.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(FinalScreen.this, MainActivity.class));
             } });
