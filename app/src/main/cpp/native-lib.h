@@ -43,9 +43,5 @@ public:
     	friend istream& operator >> (istream& os, Puzzle& board);
 
     	std::vector<std::vector<char> >& GetSudokuBoard() { return sudoku_board; };
-
-	extern "C" {
-       JNIEXPORT jint  JNICALL Java_com_example_sudoku_Puzzle_doNativeAction( JNIEnv* env,jobject thiz,jcharArray gameData );
-       }
 };
 

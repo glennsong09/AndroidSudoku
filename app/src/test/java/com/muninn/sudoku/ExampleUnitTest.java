@@ -1,4 +1,4 @@
-package com.example.sudoku;
+package com.muninn.sudoku;
 
 import org.junit.Test;
 

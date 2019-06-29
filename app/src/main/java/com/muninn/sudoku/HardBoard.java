@@ -1,4 +1,5 @@
-package com.example.sudoku;
+package com.muninn.sudoku;
+
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class EasyBoard extends AppCompatActivity {
+public class HardBoard extends AppCompatActivity {
 
     public static final int GRIDNUM = 9;
     public static final int BOXSIZE = 3;
@@ -33,7 +34,6 @@ public class EasyBoard extends AppCompatActivity {
     private final String PUZZLEFOUR = "2_5__4____38__7______58_1__6____2_3___7___2___1_7____4__6_51______9__57____4__8_9";
     private final String PUZZLECOMPLETE = "53467891267219534819834256785976142342685379171392485696153728428741963534528617_";
 
-
     private class NumericKeyBoardTransformationMethod extends PasswordTransformationMethod {
         @Override
         public CharSequence getTransformation(CharSequence source, View view) {
@@ -44,7 +44,7 @@ public class EasyBoard extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_easy_board);
+        setContentView(R.layout.activity_hard_board);
         configureMenuButton();
         configureCheckButton();
 
@@ -58,8 +58,7 @@ public class EasyBoard extends AppCompatActivity {
         allowedNums.add(8);
         allowedNums.add(9);
 
-        generateBoardFromPreexistingPuzzles(PUZZLECOMPLETE);
-
+        generateHardBoard();
         /*
         while (!solveBoard()) {
             setContentView(R.layout.activity_loading);
@@ -67,6 +66,7 @@ public class EasyBoard extends AppCompatActivity {
         }
         setContentView(R.layout.activity_board_new);
         */
+
         setInitialTextEditArrays();
         setCharLimit();
         setCanModify();
@@ -74,19 +74,11 @@ public class EasyBoard extends AppCompatActivity {
     }
 
 
-    private native int doNativeAction(char[] gameData);
-
-    /*
-    static {
-        System.loadLibrary("native-lib");
-    }
-     */
-
     public void configureMenuButton() {
         Button buttonMenu = findViewById(R.id.boardMainMenuButton);
         buttonMenu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(new Intent(EasyBoard.this, MainActivity.class));
+                startActivity(new Intent(HardBoard.this, MainActivity.class));
             } });
     }
 
@@ -96,7 +88,7 @@ public class EasyBoard extends AppCompatActivity {
             public void onClick(View v) {
                 setFinalBoard();
                 if (checkSudokuStatus(completedBoard)) {
-                    startActivity(new Intent(EasyBoard.this, FinalScreen.class));
+                    startActivity(new Intent(HardBoard.this, FinalScreen.class));
                 } else {
                     Context context = getApplicationContext();
                     CharSequence text = "Your solution is incorrect!";
@@ -108,7 +100,7 @@ public class EasyBoard extends AppCompatActivity {
     }
 
     @SuppressWarnings("unchecked")
-    public void generateEasyBoard() {
+    public void generateHardBoard() {
         int count = 0;
         for (int i = 0; i < GRIDNUM; i++) {
             for (int j = 0; j < GRIDNUM; j++) {
@@ -119,77 +111,95 @@ public class EasyBoard extends AppCompatActivity {
             ArrayList<Integer> copy = (ArrayList<Integer>) allowedNums.clone();
             Collections.shuffle(copy);
             for (int j = 0; j < GRIDNUM; j++) {
-                if (count >= 5) {
+                if (count >= 3) {
                     count = 0;
                     break;
                 }
-                if (Math.random() < 0.5) {
+                if (Math.random() < 0.3) {
                     sudokuBoard[i][j] = copy.get(0).toString().charAt(0);
                     copy.remove(0);
                     count++;
+                    Collections.shuffle(copy);
                 }
-                Collections.shuffle(copy);
             }
         }
     }
 
-    public void generateBoardFromPreexistingPuzzles(String puzzle) {
-        int count = 0;
-        for (int i = 0; i < GRIDNUM; i++) {
-            for (int j = 0; j < GRIDNUM; j++) {
-                if (puzzle.charAt(count) == '_') {
-                    sudokuBoard[i][j] = ' ';
-                } else {
-                    sudokuBoard[i][j] = puzzle.charAt(count);
-                }
-                count++;
-            }
-        }
-    }
-
-    /*
-    public boolean checkHorizontalVertialBoard() {
-        int counterOne = 0;
-        int counterTwo = 0;
-        for (int i = 0; i < GRIDNUM; i++) {
-            for (int j = 0; j < GRIDNUM; j++) {
-                counterOne += sudokuBoard[i][j] - '0';
-                counterTwo += sudokuBoard[j][i] - '0';
-
-            }
-            if (counterOne != 45 || counterTwo != 45) {
-                return false;
-            }
-            counterOne = 0;
-            counterTwo = 0;
-        }
-        counterOne = 0;
-
-        for (int i = 0; i < GRIDNUM; i++) {
-            for (int j = 1; j < GRIDNUM; j++) {
-                if (sudokuBoard[counterOne][i] == sudokuBoard[j][counterOne]
-                        || sudokuBoard[i][counterOne] == sudokuBoard[counterOne][j]) {
-                    return false;
-                }
-                counterOne++;
-            }
-        }
-        return true;
-    }
-
-    public boolean checkBoxesBoard() {
-        int counter = 0;
-        for (int i = 0; i < BOXSIZE; i++) {
-            for (int j = 0; j < BOXSIZE; j++) {
-                counter += sudokuBoard[i][j];
-            }
-        }
-        if (counter != 45) {
+    public boolean isAssignedByInput(int rowPosition, int colPosition) {
+        if (sudokuBoard[rowPosition][colPosition] == '_') {
             return false;
         }
-        return true;
+        else {
+            return true;
+        }
     }
-    */
+
+    public int[] findEmptyPosition() {
+        int[] emptyPosition = new int[2];
+        for (int i = 0; i < GRIDNUM; i++) {
+            for (int j = 0; j < GRIDNUM; j++) {
+                if (isAssignedByInput(i, j)) {
+                    continue;
+                }
+                else {
+                    emptyPosition[0] = i;
+                    emptyPosition[1] = j;
+                    return emptyPosition;
+                }
+
+            }
+        }
+        return emptyPosition;
+    }
+
+    public boolean checkNumbersAllowedInPositionHorizontalVertical(int rowPosition, int colPosition, char toCheck) {
+        boolean allowed_horizontal = true;
+        boolean allowed_vertical = true;
+        for (int row = 0; row < GRIDNUM; row++) {
+            if (sudokuBoard[row][colPosition] == toCheck) {
+                allowed_vertical = false;
+            }
+        }
+        for (int col = 0; col < GRIDNUM; col++) {
+            if (sudokuBoard[rowPosition][col] == toCheck) {
+                allowed_horizontal = false;
+            }
+        }
+        return allowed_horizontal && allowed_vertical;
+    }
+
+    public boolean checkNumbersAllowedInPositionBox(int rowPosition, int colPosition, char toCheck) {
+        boolean allowedBox = true;
+        int boxStartRowPos = rowPosition / BOXSIZE;
+        int boxStartColPos = colPosition / BOXSIZE;
+        for (int row = boxStartRowPos; row < boxStartRowPos + BOXSIZE; row++) {
+            for (int col = boxStartColPos; col < boxStartColPos + BOXSIZE; col++) {
+                if (sudokuBoard[row][col] == toCheck) {
+                    allowedBox = false;
+                }
+            }
+        }
+        return allowedBox;
+    }
+
+    public boolean solveBoard() {
+        int[] toTry = findEmptyPosition();
+        if (toTry.length <= 0) {
+            return true;
+        }
+        int row = toTry[0];
+        int col = toTry[1];
+        for (char num = '1'; num <= '9'; num++) {
+            if (checkNumbersAllowedInPositionHorizontalVertical(row, col, num) && checkNumbersAllowedInPositionBox(row, col, num)) {
+                sudokuBoard[row][col] = num;
+                if (solveBoard()) {
+                    return true;
+                }
+                sudokuBoard[row][col] = '_';
+            }
+        }
+        return false;
+    }
 
     private boolean checkSudokuStatus(char[][] grid) {
         for (int i = 0; i < 9; i++) {
@@ -215,6 +225,38 @@ public class EasyBoard extends AppCompatActivity {
             if (number != i)
                 return false;
             i++;
+        }
+        return true;
+    }
+
+    public boolean checkHorizontalVertialBoard() {
+        int counter = 0;
+        for (int i = 0; i < GRIDNUM; i++) {
+            for (int j = 1; j < GRIDNUM; j++) {
+                if (sudokuBoard[counter][i] == sudokuBoard[j][counter]) {
+                    return false;
+                }
+                if (sudokuBoard[i][counter] == sudokuBoard[counter][j]) {
+                    return false;
+                }
+                counter++;
+            }
+        }
+        return true;
+    }
+
+
+    public boolean checkBoxesBoard(int baseRow, int baseCol, int squareSize) {
+        boolean[] found = new boolean[GRIDNUM];
+        for (int row = baseRow; row < (baseRow + squareSize); ++row) {
+            for (int col = baseCol; col < (baseCol + squareSize); ++col) {
+                int index = sudokuBoard[row][col] - 1;
+                if (!found[index]) {
+                    found[index] = true;
+                } else {
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -270,7 +312,7 @@ public class EasyBoard extends AppCompatActivity {
         for (int i = 0; i < (GRIDNUM*GRIDNUM); i++) {
             editArray[i].setFilters(new InputFilter[] {new InputFilter.LengthFilter(CHARLIMIT)});
             editArray[i].setInputType(InputType.TYPE_CLASS_NUMBER);
-            editArray[i].setTransformationMethod(new EasyBoard.NumericKeyBoardTransformationMethod());
+            editArray[i].setTransformationMethod(new NumericKeyBoardTransformationMethod());
         }
     }
 

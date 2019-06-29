@@ -1,4 +1,4 @@
-package com.example.sudoku;
+package com.muninn.sudoku;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class HardBoard extends AppCompatActivity {
+public class MediumBoard extends AppCompatActivity {
 
     public static final int GRIDNUM = 9;
     public static final int BOXSIZE = 3;
@@ -44,7 +44,7 @@ public class HardBoard extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hard_board);
+        setContentView(R.layout.activity_medium_board);
         configureMenuButton();
         configureCheckButton();
 
@@ -58,7 +58,9 @@ public class HardBoard extends AppCompatActivity {
         allowedNums.add(8);
         allowedNums.add(9);
 
-        generateHardBoard();
+        generateBoardFromPreexistingPuzzles(PUZZLEONE);
+
+        //generateMediumBoard();
         /*
         while (!solveBoard()) {
             setContentView(R.layout.activity_loading);
@@ -73,12 +75,11 @@ public class HardBoard extends AppCompatActivity {
         setEditable();
     }
 
-
     public void configureMenuButton() {
         Button buttonMenu = findViewById(R.id.boardMainMenuButton);
         buttonMenu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(new Intent(HardBoard.this, MainActivity.class));
+                startActivity(new Intent(MediumBoard.this, MainActivity.class));
             } });
     }
 
@@ -88,7 +89,7 @@ public class HardBoard extends AppCompatActivity {
             public void onClick(View v) {
                 setFinalBoard();
                 if (checkSudokuStatus(completedBoard)) {
-                    startActivity(new Intent(HardBoard.this, FinalScreen.class));
+                    startActivity(new Intent(MediumBoard.this, FinalScreen.class));
                 } else {
                     Context context = getApplicationContext();
                     CharSequence text = "Your solution is incorrect!";
@@ -99,8 +100,9 @@ public class HardBoard extends AppCompatActivity {
             } });
     }
 
+
     @SuppressWarnings("unchecked")
-    public void generateHardBoard() {
+    public void generateMediumBoard() {
         int count = 0;
         for (int i = 0; i < GRIDNUM; i++) {
             for (int j = 0; j < GRIDNUM; j++) {
@@ -111,11 +113,11 @@ public class HardBoard extends AppCompatActivity {
             ArrayList<Integer> copy = (ArrayList<Integer>) allowedNums.clone();
             Collections.shuffle(copy);
             for (int j = 0; j < GRIDNUM; j++) {
-                if (count >= 3) {
+                if (count >= 4) {
                     count = 0;
                     break;
                 }
-                if (Math.random() < 0.3) {
+                if (Math.random() < 0.4) {
                     sudokuBoard[i][j] = copy.get(0).toString().charAt(0);
                     copy.remove(0);
                     count++;
@@ -123,6 +125,48 @@ public class HardBoard extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public void generateBoardFromPreexistingPuzzles(String puzzle) {
+        int count = 0;
+        for (int i = 0; i < GRIDNUM; i++) {
+            for (int j = 0; j < GRIDNUM; j++) {
+                if (puzzle.charAt(count) == '_') {
+                    sudokuBoard[i][j] = ' ';
+                } else {
+                    sudokuBoard[i][j] = puzzle.charAt(count);
+                }
+                count++;
+            }
+        }
+    }
+
+    private boolean checkSudokuStatus(char[][] grid) {
+        for (int i = 0; i < 9; i++) {
+
+            char[] row = new char[9];
+            char[] square = new char[9];
+            char[] column = grid[i].clone();
+
+            for (int j = 0; j < 9; j ++) {
+                row[j] = grid[j][i];
+                square[j] = grid[(i / 3) * 3 + j / 3][i * 3 % 9 + j % 3];
+            }
+            if (!(validate(column) && validate(row) && validate(square)))
+                return false;
+        }
+        return true;
+    }
+
+    private boolean validate(char[] check) {
+        char i = '1';
+        Arrays.sort(check);
+        for (char number : check) {
+            if (number != i)
+                return false;
+            i++;
+        }
+        return true;
     }
 
     public boolean isAssignedByInput(int rowPosition, int colPosition) {
@@ -199,34 +243,6 @@ public class HardBoard extends AppCompatActivity {
             }
         }
         return false;
-    }
-
-    private boolean checkSudokuStatus(char[][] grid) {
-        for (int i = 0; i < 9; i++) {
-
-            char[] row = new char[9];
-            char[] square = new char[9];
-            char[] column = grid[i].clone();
-
-            for (int j = 0; j < 9; j ++) {
-                row[j] = grid[j][i];
-                square[j] = grid[(i / 3) * 3 + j / 3][i * 3 % 9 + j % 3];
-            }
-            if (!(validate(column) && validate(row) && validate(square)))
-                return false;
-        }
-        return true;
-    }
-
-    private boolean validate(char[] check) {
-        char i = '1';
-        Arrays.sort(check);
-        for (char number : check) {
-            if (number != i)
-                return false;
-            i++;
-        }
-        return true;
     }
 
     public boolean checkHorizontalVertialBoard() {
@@ -312,7 +328,7 @@ public class HardBoard extends AppCompatActivity {
         for (int i = 0; i < (GRIDNUM*GRIDNUM); i++) {
             editArray[i].setFilters(new InputFilter[] {new InputFilter.LengthFilter(CHARLIMIT)});
             editArray[i].setInputType(InputType.TYPE_CLASS_NUMBER);
-            editArray[i].setTransformationMethod(new NumericKeyBoardTransformationMethod());
+            editArray[i].setTransformationMethod(new MediumBoard.NumericKeyBoardTransformationMethod());
         }
     }
 

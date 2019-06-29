@@ -1,4 +1,4 @@
-package com.example.sudoku;
+package com.muninn.sudoku;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.sudoku">
+    package="com.muninn.sudoku">
 
     <application
         android:allowBackup="true"
@@ -9,11 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FinalScreen"></activity>
-        <activity android:name=".HardBoard" />
-        <activity android:name=".MediumBoard" />
-        <activity android:name=".EasyBoard" />
-        <activity android:name=".MainActivity">
+        <activity android:name="com.muninn.sudoku.FinalScreen"></activity>
+        <activity android:name="com.muninn.sudoku.HardBoard" />
+        <activity android:name="com.muninn.sudoku.MediumBoard" />
+        <activity android:name="com.muninn.sudoku.EasyBoard" />
+        <activity android:name="com.muninn.sudoku.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
