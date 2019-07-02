@@ -95,8 +95,8 @@ bool Puzzle::CheckNumbersAllowedInPositionHorizontalVertical(int row_position, i
 //Finds if a number can be found in its box.
 bool Puzzle::CheckNumbersAllowedInPositionBox(int row_position, int col_position, char to_check) {
     bool allowed_box = true;
-    int box_start_row_position = row_position / kSizeOfBox;
-    int box_start_col_position = col_position / kSizeOfBox;
+    int box_start_row_position = (row_position / kSizeOfBox) * kSizeOfBox;
+    int box_start_col_position = (col_position / kSizeOfBox) * kSizeOfBox;
     for (int row = box_start_row_position; row < box_start_row_position + kSizeOfBox; row++) {
         for (int col = box_start_col_position; col < box_start_col_position + kSizeOfBox; col++) {
             if (sudoku_board[row][col] == to_check) {
@@ -148,13 +148,22 @@ istream& operator >> (istream& is, Puzzle& board) {
     return is;
 }
 
-
-
-
-
-
-
 extern "C" JNIEXPORT jint JNICALL
-Java_com_muninn_sudoku_NativeBridge_doNativeAction( JNIEnv* env,jobject thiz,jcharArray gameData ) {
+Java_com_muninn_sudoku_NativeBridge_doNativeAction( JNIEnv* env, jobject thiz,jcharArray gameData ) {
+
+    std::string board = "";
+    jsize len = env->GetArrayLength(gameData);
+    jchar *body = env->GetCharArrayElements(gameData,0);
+    for (jint i = 0; i < len; i++){
+        char ch = body[i];
+        board += ch;
+    }
+    (env)->ReleaseCharArrayElements(gameData, body, 0);
+    Puzzle p;
+    p.ConvertToVectorFromString(board);
+
+    if (p.SolveBoard()) {
+        return 1;
+    }
     return 0;
 }

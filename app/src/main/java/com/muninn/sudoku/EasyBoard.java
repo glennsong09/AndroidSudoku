@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,21 +57,17 @@ public class EasyBoard extends AppCompatActivity {
         allowedNums.add(8);
         allowedNums.add(9);
 
-        generateBoardFromPreexistingPuzzles(PUZZLECOMPLETE);
+        int check = 0;
 
-        /*
-        while (!solveBoard()) {
-            setContentView(R.layout.activity_loading);
+        while(check != 1) {
             generateEasyBoard();
+            check = NativeBridge.checkSolvable(sudokuBoard);
         }
-        setContentView(R.layout.activity_board_new);
-        */
+
         setInitialTextEditArrays();
         setCharLimit();
         setCanModify();
         setEditable();
-        int abc = NativeBridge.doNativeAction(null);
-        System.out.println(abc);
     }
 
     public void configureMenuButton() {
@@ -120,8 +115,8 @@ public class EasyBoard extends AppCompatActivity {
                     sudokuBoard[i][j] = copy.get(0).toString().charAt(0);
                     copy.remove(0);
                     count++;
+                    Collections.shuffle(copy);
                 }
-                Collections.shuffle(copy);
             }
         }
     }
