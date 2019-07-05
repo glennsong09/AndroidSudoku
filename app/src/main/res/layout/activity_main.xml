@@ -24,8 +24,8 @@
 
     <ImageView
         android:id="@+id/bigBackground"
-        android:layout_width="214dp"
-        android:layout_height="166dp"
+        android:layout_width="184dp"
+        android:layout_height="135dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -35,13 +35,13 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/background"
-        app:layout_constraintVertical_bias="0.164"
+        app:layout_constraintVertical_bias="0.22"
         app:srcCompat="@android:color/background_light" />
 
     <ImageView
         android:id="@+id/smallBackground0"
-        android:layout_width="344dp"
-        android:layout_height="67dp"
+        android:layout_width="303dp"
+        android:layout_height="64dp"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
         android:layout_marginTop="8dp"
@@ -50,10 +50,10 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/easyButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.111"
+        app:layout_constraintHorizontal_bias="0.397"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bigBackground"
-        app:layout_constraintVertical_bias="0.503"
+        app:layout_constraintVertical_bias="0.492"
         app:srcCompat="@android:color/background_light" />
 
     <TextView
@@ -127,20 +127,16 @@
 
     <TextView
         android:id="@+id/helpText"
-        android:layout_width="335dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_width="285dp"
+        android:layout_height="42dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="To play, please select one of the following difficulties:"
         app:layout_constraintBottom_toTopOf="@+id/easyButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/smallBackground0"
+        app:layout_constraintStart_toStartOf="@+id/smallBackground0"
         app:layout_constraintTop_toBottomOf="@+id/bigBackground"
-        app:layout_constraintVertical_bias="0.49" />
+        app:layout_constraintVertical_bias="0.482" />
 
 </android.support.constraint.ConstraintLayout>
