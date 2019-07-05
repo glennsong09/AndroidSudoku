@@ -49,7 +49,7 @@ char Puzzle::GetSudokuBoardValue(int row_pos, int col_pos) const {
 
 //Checks if the point on the board needs to be filled in or not.
 bool Puzzle::IsAssignedByInput(int row_position, int col_position) {
-    if (sudoku_board[row_position][col_position] == '_') {
+    if (sudoku_board[row_position][col_position] == ' ') {
         return false;
     }
     else {

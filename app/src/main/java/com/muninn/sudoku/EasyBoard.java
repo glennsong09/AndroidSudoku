@@ -14,24 +14,50 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Random;
 
 public class EasyBoard extends AppCompatActivity {
 
     public static final int GRIDNUM = 9;
     public static final int BOXSIZE = 3;
     public static final int CHARLIMIT = 1;
+    public static final int NUMBEROFPUZZLES = 25;
     private char[][] sudokuBoard = new char[9][9];
     private char[][] completedBoard = new char[9][9];
     private boolean[][] canModify = new boolean[9][9];
     private TextView[] textArray = new TextView[GRIDNUM * GRIDNUM];
     private EditText[] editArray = new EditText[GRIDNUM * GRIDNUM];
+    private ArrayList<String> allPuzzles = new ArrayList<String>();
     private ArrayList<Integer> allowedNums = new ArrayList<Integer>();
     private final String PUZZLEONE = "_____5__24_6_3951_1____8____749_2__1_5__6__2_8__3_476____5____4_4928_1_37__4_____";
     private final String PUZZLETWO = "_7_8_4__2_1__2__5_4__6_5___24___3_____3_6_8_____5___14___2_6__1_9__5__8_6__1_8_7_";
     private final String PUZZLETHREE = "_____7__483_1___9_____8_6____3274_____5_6_9_____3594____9_3_____7___6_481__7_____";
     private final String PUZZLEFOUR = "2_5__4____38__7______58_1__6____2_3___7___2___1_7____4__6_51______9__57____4__8_9";
-    private final String PUZZLECOMPLETE = "53467891267219534819834256785976142342685379171392485696153728428741963534528617_";
-
+    private final String PUZZLECOMPLETEONE = "534678912672195348198342567859761423426853791713924856961537284287419635345286179";
+    private final String PUZZLECOMPLETETWO = "435269781682571493197834562826195347374682915951743628519326874248957136763418259";
+    private final String PUZZLECOMPLETETHREE = "152489376739256841468371295387124659591763428246895713914637582625948137873512964";
+    private final String PUZZLECOMPLETEFOUR = "246857913189643275573291486418329567637485129952176348764532891321968754895714632";
+    private final String PUZZLECOMPLETEFIVE = "827154396965327148341689752593468271472513689618972435786235914154796823239841567";
+    private final String PUZZLECOMPLETESIX = "581672439792843651364591782438957216256184973179326845845218367913768524627435198";
+    private final String PUZZLECOMPLETESEVEN = "391286574487359126652714839875431692213967485964528713149673258538142967726895341";
+    private final String PUZZLECOMPLETEEIGHT = "452391876318675294679428315831564729245987163967213548796852431183749652524136987";
+    private final String PUZZLECOMPLETENINE = "759182463816347529234569718967258341148736295325914687582671934493825176671493852";
+    private final String PUZZLECOMPLETETEN = "295743861431865927876192543387459216612387495549216738763534189928671354154938672";
+    private final String PUZZLECOMPLETEELEVEN = "264715839137892645598436271423178596816549723759623418375281964982364157641957382";
+    private final String PUZZLECOMPLETETWELVE = "957613284483257196612849537178364952524971368369528741845792613291436875736185428";
+    private final String PUZZLECOMPLETETHIRTEEN = "286945173714632958935781426427356819658197342193428765361579284542813697879264531";
+    private final String PUZZLECOMPLETEFOURTEEN = "241695387735428169869731425413879256692513748587246931178364592954182673326957814";
+    private final String PUZZLECOMPLETEFIFTEEN = "286154973195763842743289516379625481851347629462918735634572198917836254528491367";
+    private final String PUZZLECOMPLETESIXTEEN = "586374912137952864249816573872543196693781235415629738954237681721468359368195427";
+    private final String PUZZLECOMPLETESEVENTEEN = "782645391596371428431298657314982576258763914967514832675829143849137265123456789";
+    private final String PUZZLECOMPLETEEIGHTEEN = "184963725562748319397512864239657148756184293418239657941376582623895471875421936";
+    private final String PUZZLECOMPLETENINTEEN = "234956817957814263186372459549681732618723594723495681392567148475138926861249375";
+    private final String PUZZLECOMPLETETWENTY = "315827946468915732729346518946538127571692483832174695693251874257489361184763259";
+    private final String PUZZLECOMPLETETWENTYONE = "132567948546389217978241635264918753715632894389475126857123459691754382423896571";
+    private final String PUZZLECOMPLETETWENTYTWO = "835416927296857431417293658569134782123678549748529163652781394981345276374962815";
+    private final String PUZZLECOMPLETETWENTYTHREE = "248395716571628349936741582682539174359174628714862953863417295195286437427953861";
+    private final String PUZZLECOMPLETETWENTYFOUR = "752369814869174352134825967926751438478936521315248679691582743243697185587413296";
+    private final String PUZZLECOMPLETETWENTYFIVE = "327895416841726395659134827172583649438269751596471238964318572285946163713652984";
 
     private class NumericKeyBoardTransformationMethod extends PasswordTransformationMethod {
         @Override
@@ -56,14 +82,41 @@ public class EasyBoard extends AppCompatActivity {
         allowedNums.add(7);
         allowedNums.add(8);
         allowedNums.add(9);
+        allPuzzles.add(PUZZLECOMPLETEONE);
+        allPuzzles.add(PUZZLECOMPLETETWO);
+        allPuzzles.add(PUZZLECOMPLETETHREE);
+        allPuzzles.add(PUZZLECOMPLETEFOUR);
+        allPuzzles.add(PUZZLECOMPLETEFIVE);
+        allPuzzles.add(PUZZLECOMPLETESIX);
+        allPuzzles.add(PUZZLECOMPLETESEVEN);
+        allPuzzles.add(PUZZLECOMPLETEEIGHT);
+        allPuzzles.add(PUZZLECOMPLETENINE);
+        allPuzzles.add(PUZZLECOMPLETETEN);
+        allPuzzles.add(PUZZLECOMPLETEELEVEN);
+        allPuzzles.add(PUZZLECOMPLETETWELVE);
+        allPuzzles.add(PUZZLECOMPLETETHIRTEEN);
+        allPuzzles.add(PUZZLECOMPLETEFOURTEEN);
+        allPuzzles.add(PUZZLECOMPLETEFIFTEEN);
+        allPuzzles.add(PUZZLECOMPLETESIXTEEN);
+        allPuzzles.add(PUZZLECOMPLETESEVENTEEN);
+        allPuzzles.add(PUZZLECOMPLETEEIGHTEEN);
+        allPuzzles.add(PUZZLECOMPLETENINTEEN);
+        allPuzzles.add(PUZZLECOMPLETETWENTY);
+        allPuzzles.add(PUZZLECOMPLETETWENTYONE);
+        allPuzzles.add(PUZZLECOMPLETETWENTYTWO);
+        allPuzzles.add(PUZZLECOMPLETETWENTYTHREE);
+        allPuzzles.add(PUZZLECOMPLETETWENTYFOUR);
+        allPuzzles.add(PUZZLECOMPLETETWENTYFIVE);
 
+        /*
         int check = 0;
-
         while(check != 1) {
             generateEasyBoard();
             check = NativeBridge.checkSolvable(sudokuBoard);
         }
+        */
 
+        generateEasyBoard();
         setInitialTextEditArrays();
         setCharLimit();
         setCanModify();
@@ -98,6 +151,44 @@ public class EasyBoard extends AppCompatActivity {
     @SuppressWarnings("unchecked")
     public void generateEasyBoard() {
         int count = 0;
+        int currentNum = 0;
+        Random gen = new Random();
+        int n = gen.nextInt(25) + 1;
+        String puzzle = allPuzzles.get(n);
+        for (int i = 0; i < GRIDNUM; i++) {
+            for (int j = 0; j < GRIDNUM; j++) {
+                sudokuBoard[i][j] = puzzle.charAt(currentNum);
+                currentNum++;
+            }
+        }
+        for (int i = 0; i < GRIDNUM; i++) {
+            for (int j = 0; j < GRIDNUM; j++) {
+                if (count >= 6) {
+                    count = 0;
+                    break;
+                }
+                if (Math.random() < 0.5) {
+                    sudokuBoard[i][j] = ' ';
+                    count++;
+                }
+            }
+        }
+
+        int toRotate = gen.nextInt(4);
+        for (int i = 0; i < toRotate; i++) {
+            final int M = sudokuBoard.length;
+            final int N = sudokuBoard[0].length;
+            char[][] ret = new char[N][M];
+            for (int r = 0; r < M; r++) {
+                for (int c = 0; c < N; c++) {
+                    ret[c][M-1-r] = sudokuBoard[r][c];
+                }
+            }
+            sudokuBoard = ret;
+        }
+
+        /*
+        int count = 0;
         for (int i = 0; i < GRIDNUM; i++) {
             for (int j = 0; j < GRIDNUM; j++) {
                 sudokuBoard[i][j] = ' ';
@@ -119,6 +210,7 @@ public class EasyBoard extends AppCompatActivity {
                 }
             }
         }
+        */
     }
 
     public void generateBoardFromPreexistingPuzzles(String puzzle) {
